@@ -13,6 +13,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
+    bucket  = "devsecops-research-terragoat-tfstate-swfji4"
+    key     = "terraform.tfstate"
+    region  = "us-west-2"
     encrypt = true
   }
 }

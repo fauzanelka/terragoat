@@ -15,7 +15,7 @@ terraform {
   backend "s3" {
     bucket  = "devsecops-research-terragoat-tfstate-swfji4"
     key     = "terraform.tfstate"
-    region  = "us-west-2"
+    region  = "ap-southeast-1"
     encrypt = true
   }
 }

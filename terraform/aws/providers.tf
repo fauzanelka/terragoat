@@ -13,6 +13,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    encrypt = true
+    bucket         = "fauzan-terragoat-tfstate"
+    key            = "terraform.tfstate"
+    encrypt        = true
+    region         = "ap-southeast-1"
   }
 }

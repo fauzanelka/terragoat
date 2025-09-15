@@ -27,14 +27,20 @@ resource "aws_elasticsearch_domain" "monitoring-framework" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 data aws_iam_policy_document "policy" {
   statement {
-    actions = ["es:*"]
+    actions = [
+      "es:ESHttpGet",
+      "es:ESHttpPost",
+      "es:ESHttpPut"
+    ]
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
-    resources = ["*"]
+    resources = ["arn:aws:es:*:${data.aws_caller_identity.current.account_id}:domain/${aws_elasticsearch_domain.monitoring-framework.domain_name}/*"]
   }
 }
 

@@ -112,18 +112,6 @@ resource "aws_s3_bucket" "data_science" {
 
 resource "aws_s3_bucket" "logs" {
   bucket = "${local.resource_prefix.value}-logs"
-  acl    = "log-delivery-write"
-  versioning {
-    enabled = true
-  }
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm     = "aws:kms"
-        kms_master_key_id = "${aws_kms_key.logs_key.arn}"
-      }
-    }
-  }
   force_destroy = true
   tags = merge({
     Name        = "${local.resource_prefix.value}-logs"
@@ -138,4 +126,35 @@ resource "aws_s3_bucket" "logs" {
     git_repo             = "terragoat"
     yor_trace            = "01946fe9-aae2-4c99-a975-e9b0d3a4696c"
   })
+}
+
+resource "aws_s3_bucket_versioning" "logs_versioning" {
+  bucket = aws_s3_bucket.logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption" {
+  bucket = aws_s3_bucket.logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.logs_key.arn
+    }
+  }
+}
+
+resource "aws_s3_bucket_object_ownership" "logs_ownership" {
+  bucket = aws_s3_bucket.logs.id
+
+  object_ownership = "BucketOwnerPreferred"
+}
+
+resource "aws_s3_bucket_acl" "logs_acl" {
+  depends_on = [aws_s3_bucket_object_ownership.logs_ownership]
+
+  bucket = aws_s3_bucket.logs.id
+  acl    = "log-delivery-write"
 }

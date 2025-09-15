@@ -1,3 +1,12 @@
+resource "aws_neptune_subnet_group" "default" {
+  name       = "neptune-subnet-group"
+  subnet_ids = [aws_subnet.web_subnet.id, aws_subnet.web_subnet2.id]
+
+  tags = {
+    Name = "Neptune DB subnet group"
+  }
+}
+
 resource "aws_neptune_cluster" "default" {
   cluster_identifier                  = var.neptune-dbname
   engine                              = "neptune"
@@ -7,6 +16,7 @@ resource "aws_neptune_cluster" "default" {
   iam_database_authentication_enabled = false
   apply_immediately                   = true
   storage_encrypted                   = false
+  neptune_subnet_group_name           = aws_neptune_subnet_group.default.name
   tags = {
     git_commit           = "aa8fd16fd94cccf6af206e2f0922b5558f8ac514"
     git_file             = "terraform/aws/neptune.tf"

@@ -112,6 +112,7 @@ resource "aws_s3_bucket" "data_science" {
 
 resource "aws_s3_bucket" "logs" {
   bucket = "${local.resource_prefix.value}-logs"
+  acl    = "log-delivery-write"
   force_destroy = true
   tags = merge({
     Name        = "${local.resource_prefix.value}-logs"
@@ -146,7 +147,3 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption" 
   }
 }
 
-resource "aws_s3_bucket_acl" "logs_acl" {
-  bucket = aws_s3_bucket.logs.id
-  acl    = "log-delivery-write"
-}

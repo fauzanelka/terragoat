@@ -146,15 +146,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption" 
   }
 }
 
-resource "aws_s3_bucket_object_ownership" "logs_ownership" {
-  bucket = aws_s3_bucket.logs.id
-
-  object_ownership = "BucketOwnerPreferred"
-}
-
 resource "aws_s3_bucket_acl" "logs_acl" {
-  depends_on = [aws_s3_bucket_object_ownership.logs_ownership]
-
   bucket = aws_s3_bucket.logs.id
   acl    = "log-delivery-write"
 }
